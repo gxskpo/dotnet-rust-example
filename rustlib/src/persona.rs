@@ -25,16 +25,18 @@ extern "C" fn get_user() -> Persona {
 
 #[no_mangle]
 extern "C" fn cambiar_nacionalidad(persona: &mut Persona) -> &mut Persona {
-    let nacionalidad_actual = unsafe { CStr::from_ptr(persona.nacionalidad) };
-    let layout = Layout::from_size_align(
-        nacionalidad_actual.to_bytes().len(),
-        std::mem::align_of::<u8>(),
-    )
-    .unwrap();
+    if !persona.nacionalidad.is_null() {
+        let nacionalidad_actual = unsafe { CStr::from_ptr(persona.nacionalidad) };
+        let layout = Layout::from_size_align(
+            nacionalidad_actual.to_bytes().len(),
+            std::mem::align_of::<u8>(),
+        )
+        .unwrap();
 
-    unsafe {
-        dealloc(persona.nacionalidad.cast::<u8>(), layout);
-    };
+        unsafe {
+            dealloc(persona.nacionalidad.cast::<u8>(), layout);
+        };
+    }
     let nueva_nacionalidad = CString::new("Bolivia").expect(".");
     persona.nacionalidad = nueva_nacionalidad.into_raw();
     persona
@@ -43,10 +45,15 @@ extern "C" fn cambiar_nacionalidad(persona: &mut Persona) -> &mut Persona {
 #[no_mangle]
 extern "C" fn release_persona(persona: &mut Persona) {
     unsafe {
-        let _ = CString::from_raw(persona.nombre);
-        let _ = CString::from_raw(persona.nacionalidad);
-        persona.nombre = ptr::null_mut();
-        persona.nacionalidad = ptr::null_mut();
+        if !persona.nombre.is_null() {
+            let _ = CString::from_raw(persona.nombre);
+            persona.nombre = ptr::null_mut();
+        }
+
+        if !persona.nacionalidad.is_null() {
+            let _ = CString::from_raw(persona.nacionalidad);
+            persona.nacionalidad = ptr::null_mut();
+        }
     }
 }
 

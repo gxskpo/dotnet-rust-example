@@ -17,12 +17,12 @@ public abstract class Program
 
         Console.WriteLine(separador);
 
-	// Ejemplo HashMap
+        // Ejemplo HashMap
         Handlers.HashMap();
 
         Console.WriteLine(separador);
 
-	// Ejemplo Lista
+        // Ejemplo Lista
         Handlers.Lista();
     }
 }

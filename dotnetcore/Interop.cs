@@ -71,7 +71,12 @@ public static class Interop
     public static extern int get_item(IntPtr list_ptr, ulong len, ulong index);
 
     [DllImport("rustlib")]
-    public static extern IntPtr remove_item(IntPtr list_ptr, ulong len, ulong index, out ulong length);
+    public static extern IntPtr remove_item(
+        IntPtr list_ptr,
+        ulong len,
+        ulong index,
+        out ulong length
+    );
 
     [DllImport("rustlib")]
     public static extern void release_list(IntPtr ptr);
